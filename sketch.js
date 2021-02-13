@@ -1,64 +1,73 @@
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
 
 var engine, world;
-var box1, pig1;
-var backgroundImg,platform;
 
-function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+var box1, box2, box3, box4, box5;
+var log1, log2, log3, log4;
+var ground1, ground2;
+
+var pig1, pig2;
+
+var bird;
+
+function setup() {
+  createCanvas(1600,800);
+  engine = Engine.create();
+  world = engine.world;
+
+  box1 = new Box(1000, 650, 100, 100);
+  box2 = new Box(1300, 650, 100, 100);
+
+  pig1 = new Pig(1150, 650);
+
+  log1 = new Log(1150, 600, 400, PI/2);
+
+  box3 = new Box(1000, 525, 100, 100);
+  box4 = new Box(1300, 525, 100, 100);
+  
+  pig2 = new Pig(1150, 525);
+  
+  log2 = new Log(1150, 475, 400, PI/2);
+  
+  box5 = new Box(1150, 420, 100, 100);
+
+  log3 = new Log(1240, 365, 200, -PI/8);
+  
+  log4 = new Log(1060, 365, 200, PI/8);
+
+  bird = new Bird(420, 0);
+
+  ground1 = new Ground(200, 600, 400, 400, [139,69,19]);
+
+  ground2 = new Ground(width/2, height*15/16, width, height*1/8, [139,69,19]);
+
+  // engine.timing.timeScale = 0;
 }
 
-function setup(){
-    var canvas = createCanvas(1200,400);
-    engine = Engine.create();
-    world = engine.world;
+function draw() {
+  background(50);
+  Engine.update(engine);
 
+  // bird.move();
 
-    ground = new Ground(600,height,1200,20);
-    platform = new Ground(150, 305, 300, 170);
+  ground1.display();
+  ground2.display();
 
-    box1 = new Box(700,320,70,70);
-    box2 = new Box(920,320,70,70);
-    pig1 = new Pig(810, 350);
-    log1 = new Log(810,260,300, PI/2);
+  box1.display();
+  box2.display();
+  box3.display();
+  box4.display();
+  box5.display();
 
-    box3 = new Box(700,240,70,70);
-    box4 = new Box(920,240,70,70);
-    pig3 = new Pig(810, 220);
+  pig1.display();
+  pig2.display();
 
-    log3 =  new Log(810,180,300, PI/2);
+  log1.display();
+  log2.display();
+  log3.display();
+  log4.display();
 
-    box5 = new Box(810,160,70,70);
-    log4 = new Log(760,120,150, PI/7);
-    log5 = new Log(870,120,150, -PI/7);
-
-    bird = new Bird(100,100);
-
-}
-
-function draw(){
-    background(backgroundImg);
-    Engine.update(engine);
-    console.log(box2.body.position.x);
-    console.log(box2.body.position.y);
-    console.log(box2.body.angle);
-    box1.display();
-    box2.display();
-    ground.display();
-    pig1.display();
-    log1.display();
-
-    box3.display();
-    box4.display();
-    pig3.display();
-    log3.display();
-
-    box5.display();
-    log4.display();
-    log5.display();
-
-    bird.display();
-    platform.display();
+  bird.display();
 }
