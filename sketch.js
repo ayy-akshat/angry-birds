@@ -70,4 +70,6 @@ function draw() {
   log4.display();
 
   bird.display();
+
+  text("test", 50, 50);
 }
