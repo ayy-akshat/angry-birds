@@ -10,6 +10,9 @@ class BaseClass
             frictionStatic:1,
             density:1
         }
+
+        this.initialX = x;
+        this.initialY = y;
         
         this.width = width;
         this.height = height;
@@ -28,5 +31,13 @@ class BaseClass
         rotate(angle);
         image(this.image, 0, 0, this.width, this.height);
         pop();
+    }
+
+    resetPosition()
+    {
+        Matter.Body.setPosition(this.body, {x:this.initialX, y:this.initialY});
+        Matter.Body.setVelocity(this.body, {x:0, y:0});
+        Matter.Body.setAngle(this.body, 0);
+        Matter.Body.setAngularVelocity(this.body, 0);
     }
 }
