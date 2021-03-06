@@ -22,6 +22,17 @@ var mCon;
 
 var birdReleased;
 
+var attempts, score;
+
+var bgImg, bgImg2;
+var currentImg;
+
+function preload()
+{
+  bgImg = loadImage("sprites/bg.png");
+  bgImg2 = loadImage("sprites/bg2.jpg");
+}
+
 function setup() {
   var canvas = createCanvas(1600,800);
   engine = Engine.create();
@@ -55,34 +66,23 @@ function setup() {
 
   birdCon = new Slingshot(bird.body, 50, 0, {x:0, y:0}, {x:350, y:145});
 
-  // var canvasMouse = Mouse.create(canvas.elt);
-	// canvasMouse.pixelRatio = pixelDensity();
-
-	// var mCOpt = 
-	// {
-	// 	mouse: canvasMouse
-	// }
-
-	// mCon = MouseConstraint.create(engine, mCOpt);
-
-	// World.add(world, mCon);
-
   birdReleased = false;
 
-  // engine.timing.timeScale = 0;
+  attempts = 0;
+  score = 0;
 }
 
 function draw() {
-  background(50);
-
-  // if (mCon.body && mCon.body != bird.body)
-  // {
-  //   World.remove(world, mCon);
-  // }
+  imageMode(CENTER);
+  if (currentImg)
+  {
+    image(currentImg, width/2, height/2, width, height);
+  }
+  bird.smokeTrail();
 
   Engine.update(engine);
 
-  if (!birdReleased)
+  if (!birdCon.bodyReleased && attempts == 0)
   {
     box1.resetPosition();
     box2.resetPosition();
@@ -118,16 +118,22 @@ function draw() {
 
   birdCon.drawCatapult();
   birdCon.drawLine([45, 23, 11], 10);
-  // birdCon.drawPoints(10, "orange", "green");
 
-  text(mouseX, 100, 100);
-  text(mouseY, 100, 150);
+  fill("white");
+  textAlign(CENTER);
+  textSize(50);
+  text("Attempts: " + attempts + "/3 used", width/2, height/5);
+  text("Score: " + score, width/2, height*2/5);
 
+  getBgImage();
 }
-
 
 function mouseDragged()
 {
+  if (birdCon.bodyReleased)
+  {
+    return;
+  }
   Matter.Body.setPosition(bird.body, {x:mouseX, y:mouseY});
   Matter.Body.setAngularVelocity(bird.body, 0);
   Matter.Body.setAngle(bird.body, 0);
@@ -135,31 +141,45 @@ function mouseDragged()
 
 function mouseReleased()
 {
-  // World.add(world, mCon);
-  // if (mCon.body == bird.body)
-  // {
-  //   birdReleased = true;
-  //   World.remove(world, mCon);
-  //   birdCon.constraint.bodyA = null;
-  // }
-
-  shootBird();
+  if (birdCon.bodyReleased)
+  {
+    return;
+  }
+  birdCon.shootBody();
+  attempts++;
 }
 
-// Matter.Events.on(mCon, "mouseup", function()
-// {
-//   World.add(world, mCon);
-//   if (mCon.body == bird.body)
-//   {
-//     birdReleased = true;
-//     World.remove(world, mCon);
-//     birdCon.constraint.bodyA = null;
-//   }
-// });
-
-function shootBird()
+function keyPressed()
 {
-  birdReleased = true;
-  // World.remove(world, mCon);
-  birdCon.constraint.bodyA = null;
+  if (keyCode == 32 && (bird.body.speed <= 1 || (bird.body.position.x > width || bird.body.position.x < 0 || bird.body.position.y > height || bird.body.position.y < 0)))
+  {
+    if (attempts >= 3 || score == 200)
+    {
+      attempts = 0;
+      World.add(world, pig1.body);
+      World.add(world, pig2.body);
+      pig1.opacity = 255;
+      pig2.opacity = 255;
+      score = 0;
+    }
+    birdCon.resetBody(bird.body);
+  }
+}
+
+async function getBgImage()
+{
+  var response = await fetch("http://worldtimeapi.org/api/timezone/America/Los_Angeles");
+  
+  var jsonData = await response.json();
+  
+  var time = jsonData.datetime.slice(11, 13);
+
+  if (time >= 06 && time <= 18)
+  {
+    currentImg = bgImg;
+  }
+  else
+  {
+    currentImg = bgImg2;
+  }
 }

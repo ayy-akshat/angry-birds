@@ -10,6 +10,7 @@ class Slingshot {
             pointB: point
         }
 
+        this.bodyReleased = false;
         this.point = point;
         this.constraint = Constraint.create(conOpt);
         this.sling1 = loadImage("sprites/sling1.png");
@@ -64,5 +65,20 @@ class Slingshot {
         stroke(point2color)
         point(this.point.x, this.point.y);
         pop();
+    }
+
+    shootBody()
+    {
+        this.bodyReleased = true;
+        this.constraint.bodyA = null;
+    }
+
+    resetBody(body)
+    {
+        this.bodyReleased = false;
+        this.constraint.bodyA = body;
+        Matter.Body.setAngularVelocity(body, 0);
+        Matter.Body.setAngle(body, 0);
+        Matter.Body.setPosition(body, {x:this.point.x, y:this.point.y});
     }
 }
