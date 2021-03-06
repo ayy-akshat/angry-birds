@@ -26,6 +26,7 @@ var attempts, score;
 
 var bgImg, bgImg2;
 var currentImg;
+var nightMode;
 
 function preload()
 {
@@ -70,6 +71,9 @@ function setup() {
 
   attempts = 0;
   score = 0;
+
+  nightMode = false;
+  currentImg = bgImg;
 }
 
 function draw()
@@ -127,7 +131,9 @@ function draw()
   text("Attempts: " + attempts + "/3 used", width/2, height/5);
   text("Score: " + score, width/2, height*2/5);
 
-  getBgImage();
+  textSize(20);
+  textAlign(LEFT);
+  text("Press n to change the time of day.", 50, 50);
 }
 
 function mouseDragged()
@@ -166,22 +172,18 @@ function keyPressed()
     }
     birdCon.resetBody(bird.body);
   }
-}
 
-async function getBgImage()
-{
-  var response = await fetch("http://worldtimeapi.org/api/timezone/America/Los_Angeles");
-  
-  var jsonData = await response.json();
-  
-  var time = jsonData.datetime.slice(11, 13);
-
-  if (time >= 06 && time <= 18)
+  if (keyCode == 78)
   {
-    currentImg = bgImg;
-  }
-  else
-  {
-    currentImg = bgImg2;
-  }
+    console.log('n pressed');
+    nightMode = !nightMode;
+    if (nightMode)
+    {
+      currentImg = bgImg2;
+    }
+    else
+    {
+      currentImg = bgImg;
+    }
+  } 
 }
