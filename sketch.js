@@ -72,7 +72,9 @@ function setup() {
   score = 0;
 }
 
-function draw() {
+function draw()
+{
+  background("skyblue");
   imageMode(CENTER);
   if (currentImg)
   {
